@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import AdminNav from "@/components/AdminNav";
 import { createTrainer, listTrainers, updateTrainer } from "@/actions/admin";
 
@@ -79,6 +80,7 @@ export default function AdminTrainersPage() {
             <table className="w-full text-left text-sm">
               <thead className="bg-stone-50 text-stone-500">
                 <tr>
+                  <th className="px-4 py-3 font-medium" />
                   <th className="px-4 py-3 font-medium">Имя</th>
                   <th className="px-4 py-3 font-medium">Роль</th>
                   <th className="px-4 py-3 font-medium">Статус</th>
@@ -88,6 +90,21 @@ export default function AdminTrainersPage() {
               <tbody>
                 {trainers.map((t) => (
                   <tr key={t.id} className="border-t border-stone-100">
+                    <td className="px-4 py-3">
+                      {t.photoUrl ? (
+                        <Image
+                          src={t.photoUrl}
+                          alt={t.name}
+                          width={32}
+                          height={32}
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-200 text-xs text-stone-600">
+                          {t.name.charAt(0)}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">{t.name}</td>
                     <td className="px-4 py-3">{t.role === "golf_pro" ? "Golf Pro" : "Тренер"}</td>
                     <td className="px-4 py-3">

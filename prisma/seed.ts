@@ -19,17 +19,31 @@ async function main() {
 
   // --- Trainers --------------------------------------------------------
   const trainers = [
-    { name: "Денис Чирков", role: "golf_pro" },
-    { name: "Илья Бурлаков", role: "golf_pro" },
-    { name: "Николай Марцинкевич", role: "golf_pro" },
-    { name: "Владимир Головач", role: "trainer" },
-    { name: "Андрей Ярук", role: "trainer" },
-    { name: "Александр Максимчик", role: "trainer" },
+    { name: "Денис Чирков", role: "golf_pro", photoUrl: "/images/trainers/chirkov-denis.webp" },
+    { name: "Илья Бурлаков", role: "golf_pro", photoUrl: "/images/trainers/burlakov-ilya.webp" },
+    {
+      name: "Николай Марцинкевич",
+      role: "golf_pro",
+      photoUrl: "/images/trainers/martsinkevich-nikolay.webp",
+    },
+    {
+      name: "Владимир Головач",
+      role: "trainer",
+      photoUrl: "/images/trainers/golovach-vladimir.webp",
+    },
+    { name: "Андрей Ярук", role: "trainer", photoUrl: "/images/trainers/yaruk-andrey.webp" },
+    {
+      name: "Александр Максимчик",
+      role: "trainer",
+      photoUrl: "/images/trainers/maksimchik-aleksandr.webp",
+    },
   ];
 
   for (const t of trainers) {
     const existing = await prisma.trainer.findFirst({ where: { name: t.name } });
-    if (!existing) {
+    if (existing) {
+      await prisma.trainer.update({ where: { id: existing.id }, data: { photoUrl: t.photoUrl } });
+    } else {
       await prisma.trainer.create({ data: t });
     }
   }

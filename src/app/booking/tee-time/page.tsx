@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageBanner from "@/components/PageBanner";
 import PhoneInput from "@/components/PhoneInput";
 import {
   createTeeTimeBooking,
@@ -110,9 +111,8 @@ export default function TeeTimePage() {
     <>
       <Header />
       <main className="flex-1">
+        <PageBanner image="/images/course/start.webp" title="Бронирование ти-тайма" />
         <div className="mx-auto max-w-2xl px-4 py-10">
-          <h1 className="text-2xl font-semibold text-stone-900">Бронирование ти-тайма</h1>
-
           {/* Step 1: hole + date */}
           <section className="mt-8">
             <h2 className="text-sm font-medium text-stone-500">1. Старт и дата</h2>

@@ -62,12 +62,29 @@ export function generateSlotStarts(
   return starts;
 }
 
+const CLUB_TIME_ZONE = "Europe/Minsk";
+
+/** Current wall-clock date/time in the club's timezone, independent of the server's own TZ (Vercel runs in UTC). */
+function nowInClubTimeZone(): { dateKey: string; minutes: number } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: CLUB_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+
+  const get = (type: string) => parts.find((p) => p.type === type)!.value;
+  const dateKey = `${get("year")}-${get("month")}-${get("day")}`;
+  const minutes = Number(get("hour")) * 60 + Number(get("minute"));
+  return { dateKey, minutes };
+}
+
 export function isTodayOrFuture(dateKey: string, time: string): boolean {
-  const now = new Date();
-  const todayKey = now.toISOString().slice(0, 10);
-  if (dateKey > todayKey) return true;
-  if (dateKey < todayKey) return false;
-  // Compare in local time roughly — good enough for filtering past slots today.
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
-  return timeToMinutes(time) > nowMinutes;
+  const now = nowInClubTimeZone();
+  if (dateKey > now.dateKey) return true;
+  if (dateKey < now.dateKey) return false;
+  return timeToMinutes(time) > now.minutes;
 }

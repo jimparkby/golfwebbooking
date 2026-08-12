@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageBanner from "@/components/PageBanner";
 import PhoneInput from "@/components/PhoneInput";
 import {
   createLessonBooking,
@@ -123,9 +125,8 @@ export default function LessonPage() {
     <>
       <Header />
       <main className="flex-1">
+        <PageBanner image="/images/course/lessons.webp" title="Запись на тренировку" />
         <div className="mx-auto max-w-2xl px-4 py-10">
-          <h1 className="text-2xl font-semibold text-stone-900">Запись на тренировку</h1>
-
           {/* Step 1: service */}
           <section className="mt-8">
             <h2 className="text-sm font-medium text-stone-500">1. Услуга</h2>
@@ -155,17 +156,30 @@ export default function LessonPage() {
               <h2 className="text-sm font-medium text-stone-500">
                 2. {roleLabel[service.trainerRole ?? ""] ?? "Тренер"}
               </h2>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-3">
                 {trainers.map((t) => (
                   <button
                     key={t.id}
                     onClick={() => setTrainerId(t.id)}
-                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition ${
+                    className={`flex items-center gap-3 rounded-lg border py-2 pl-2 pr-4 text-sm font-medium transition ${
                       trainerId === t.id
                         ? "border-emerald-700 bg-emerald-700 text-white"
                         : "border-stone-300 bg-white text-stone-700 hover:border-emerald-700"
                     }`}
                   >
+                    {t.photoUrl ? (
+                      <Image
+                        src={t.photoUrl}
+                        alt={t.name}
+                        width={36}
+                        height={36}
+                        className="h-9 w-9 rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-200 text-xs text-stone-600">
+                        {t.name.charAt(0)}
+                      </span>
+                    )}
                     {t.name}
                   </button>
                 ))}

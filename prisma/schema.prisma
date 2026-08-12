@@ -1,0 +1,100 @@
+// Prisma schema for Golf Club Minsk booking app.
+// Local dev uses SQLite (see .env). For production, switch provider to
+// "postgresql" and point DATABASE_URL at a managed Postgres instance
+// (see DEPLOY.md) — the models below avoid provider-specific features
+// so the switch is a one-line change.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Club staff who can log into /admin
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+// A trainer / golf pro who can be booked for lessons
+model Trainer {
+  id        String   @id @default(cuid())
+  name      String
+  role      String // "golf_pro" | "trainer"
+  photoUrl  String?
+  bio       String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings Booking[]
+}
+
+// Bookable offering: a lesson type (tied to a trainer) or a tee time product.
+model Service {
+  id          String   @id @default(cuid())
+  type        String // "lesson" | "tee_time"
+  title       String
+  description String?
+  durationMin Int
+  priceByn    Int? // price in BYN, null = "price on request"
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Only relevant for type = "lesson": which trainer role can give it
+  // ("golf_pro" | "trainer"). The client picks a specific trainer of
+  // this role when booking.
+  trainerRole String?
+
+  // Only relevant for type = "tee_time"
+  startingHole Int? // 1 or 10
+  maxPlayers   Int? // capacity per slot, e.g. 4
+
+  bookings Booking[]
+}
+
+// A single reservation made by a client.
+model Booking {
+  id        String   @id @default(cuid())
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id])
+
+  trainerId String?
+  trainer   Trainer? @relation(fields: [trainerId], references: [id])
+
+  date      DateTime // calendar date of the booking (local midnight)
+  startTime String // "HH:mm"
+  endTime   String // "HH:mm"
+
+  clientName  String
+  clientPhone String
+  players     Int      @default(1) // for tee times: number of players in this booking
+  holes       Int? // 9 or 18, for tee_time bookings
+  comment     String?
+
+  status    String   @default("confirmed") // "confirmed" | "cancelled"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Working hours per weekday, used to generate available slots.
+model WorkingHours {
+  id        String @id @default(cuid())
+  weekday   Int // 0=Sunday .. 6=Saturday
+  openTime  String // "HH:mm"
+  closeTime String // "HH:mm"
+}
+
+// Specific dates the club is closed (holidays, maintenance, etc.)
+model ClosedDate {
+  id     String   @id @default(cuid())
+  date   DateTime
+  reason String?
+}

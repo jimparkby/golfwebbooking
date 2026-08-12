@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Гольф-клуб Минск — онлайн-бронирование
 
-## Getting Started
+Веб-приложение для бронирования ти-таймов и записи на персональные тренировки.
+Собственная система бронирования (не виджет YClients): клиентская часть на
+русском языке, админ-панель для сотрудников клуба, оплата на месте в клубе.
 
-First, run the development server:
+## Стек
+
+- **Next.js 16** (App Router, TypeScript, Tailwind CSS)
+- **Prisma 6** + SQLite (локальная разработка) / PostgreSQL (продакшн)
+- **NextAuth v5** — вход для администраторов
+- Server Actions вместо отдельного REST/API-слоя
+
+## Возможности
+
+**Клиенты (без регистрации):**
+- Бронирование ти-тайма: выбор старта (Лунка 1 / Лунка 10), даты, времени
+  (слоты по 15 минут), количества лунок (9/18) и игроков (до 4 на слот)
+- Запись на тренировку: выбор услуги (урок / выход на поле, тренер / golf pro),
+  конкретного тренера, даты и свободного времени
+- Подтверждение по имени и телефону, оплата на месте в клубе
+
+**Админка (`/admin`):**
+- Дашборд с записями на сегодня
+- Список всех записей с фильтром по дате и отменой
+- Управление тренерами (добавление, скрытие)
+- Управление услугами и ценами
+- Расписание работы клуба по дням недели и закрытые даты (выходные)
+
+## Локальный запуск
 
 ```bash
+npm install
+npm run seed   # создаёт админа и наполняет БД реальными услугами/тренерами клуба
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Приложение: http://localhost:3000
+Админка: http://localhost:3000/admin
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Данные для входа в админку по умолчанию (см. `.env`):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+email: admin@golfminsk.by
+пароль: changeme123
+```
 
-## Learn More
+**Смените пароль администратора перед тем как давать доступ реальным
+сотрудникам** — либо через `SEED_ADMIN_PASSWORD` в `.env` до первого сева,
+либо напрямую в БД.
 
-To learn more about Next.js, take a look at the following resources:
+## Структура проекта
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+prisma/schema.prisma      — модель данных (тренеры, услуги, брони, расписание)
+prisma/seed.ts            — начальные данные: реальные тренеры и услуги клуба
+src/actions/booking.ts    — публичная логика бронирования (server actions)
+src/actions/admin.ts      — админ-логика (защищена авторизацией)
+src/app/booking/          — клиентские мастера бронирования
+src/app/admin/            — админ-панель
+src/lib/auth.ts           — NextAuth конфигурация
+src/lib/slots.ts          — генерация тайм-слотов
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Деплой
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+См. [DEPLOY.md](./DEPLOY.md) — пошаговая инструкция для Vercel + управляемый
+Postgres (Neon/Supabase).

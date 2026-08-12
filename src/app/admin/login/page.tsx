@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 export default function AdminLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +24,8 @@ export default function AdminLoginPage() {
     if (result?.error) {
       setError("Неверный email или пароль");
     } else {
-      window.location.href = "/admin";
+      router.push("/admin");
+      router.refresh();
     }
   }
 

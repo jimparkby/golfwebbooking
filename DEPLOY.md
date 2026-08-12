@@ -1,92 +1,64 @@
-# Деплой на Vercel + Postgres
+# Деплой
 
-Локально проект использует SQLite (файл `prisma/dev.db`) — так проще всего
-разрабатывать без внешних сервисов. В проде используется управляемый Postgres.
-Схема Prisma (`prisma/schema.prisma`) намеренно не использует
-специфичных для SQLite возможностей, так что переключение — это две строчки.
+Текущий статус: **настроено и задеплоено.**
 
-## 1. Создайте базу Postgres
+- **База данных:** Neon (проект `golf-club-minsk-booking`, регион Frankfurt),
+  ветка `production` для прода, ветка `dev` для локальной разработки
+- **Хостинг:** Vercel, проект `golfwebbooking` (аккаунт `jimparkby`)
+- **Репозиторий:** https://github.com/jimparkby/golfwebbooking
+- **Переменные окружения на Vercel:** `DATABASE_URL` (пуловое подключение к
+  ветке `production` в Neon), `AUTH_SECRET` (сгенерирован отдельно от
+  локального)
 
-Подойдёт любой управляемый Postgres с бесплатным тарифом, например:
+## Как обновить прод
 
-- **Neon** — https://neon.tech (рекомендуется, есть бесплатный план,
-  хорошо работает с Vercel)
-- **Supabase** — https://supabase.com
-
-Создайте проект/базу и скопируйте строку подключения (`DATABASE_URL`) вида:
-
-```
-postgresql://user:password@host/dbname?sslmode=require
-```
-
-Это шаг, который нужно сделать вам самим — Claude не может создавать
-аккаунты в сторонних сервисах от вашего имени.
-
-## 2. Переключите Prisma на Postgres
-
-В `prisma/schema.prisma` замените:
-
-```prisma
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
-```
-
-на:
-
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-Локально (или в CI перед первым деплоем) примените миграции к новой базе:
+Любой пуш в `main` на GitHub автоматически триггерит новый деплой на Vercel.
 
 ```bash
-DATABASE_URL="postgresql://..." npx prisma migrate deploy
-DATABASE_URL="postgresql://..." npm run seed
+git add -A
+git commit -m "..."
+git push
 ```
 
-## 3. Разверните на Vercel
+## Изменение схемы БД
 
-1. Запушьте репозиторий на GitHub/GitLab.
-2. На https://vercel.com → **New Project** → выберите репозиторий.
-3. Framework Preset определится автоматически как Next.js.
-4. В **Environment Variables** добавьте:
-   - `DATABASE_URL` — строка подключения из шага 1
-   - `AUTH_SECRET` — сгенерируйте новый секрет командой:
-     ```bash
-     openssl rand -base64 32
-     ```
-     (не используйте значение из локального `.env` в проде)
-   - `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` — только если планируете
-     повторно запускать `npm run seed` в проде; иначе можно не задавать
-5. Нажмите **Deploy**.
+1. Поменяйте `prisma/schema.prisma`.
+2. Создайте и примените миграцию на dev-ветке (она же — ваша обычная
+   локальная работа):
+   ```bash
+   npx prisma migrate dev --name <описание>
+   ```
+3. Примените ту же миграцию на продакшн-ветке Neon перед (или сразу после)
+   пуша:
+   ```bash
+   DATABASE_URL="<connection string ветки production из Neon Console>" \
+     npx prisma migrate deploy
+   ```
+   Строку подключения возьмите в Neon Console → Connect → ветка
+   `production` → **отключите** Connection pooling (для миграций нужен
+   прямой коннект, не через pgbouncer).
 
-## 4. После первого деплоя
+## Доступ к сервисам
 
-- Смените пароль администратора (см. README) — либо через новый сев с
-  другим `SEED_ADMIN_PASSWORD`, либо вручную в базе.
-- Проверьте `/admin/hours` — задайте реальные часы работы клуба и,
-  если нужно, отметьте ближайшие закрытые даты.
-- Проверьте `/admin/services` — при необходимости скорректируйте цены.
+- **Neon:** https://console.neon.tech — залогинен как `v.belous1024@gmail.com`
+- **Vercel:** https://vercel.com/jimparkbys-projects — залогинен через GitHub
+  (`jimparkby`)
+- **Админка приложения:** `/admin`, логин `admin@golfminsk.by`,
+  пароль тот же, что задан при первом севе (`changeme123` по умолчанию —
+  **смените его** через `/admin` или напрямую в БД перед тем как передавать
+  доступ сотрудникам клуба)
 
-## Обновления схемы БД
+## Восстановление доступа локально (для нового окружения)
 
-При изменении `prisma/schema.prisma` создавайте миграцию локально:
+Если понадобится настроить проект с нуля на другой машине:
 
 ```bash
-npx prisma migrate dev --name <описание>
+npm install
 ```
 
-и применяйте её на проде при следующем деплое:
+И заполнить `.env`:
 
-```bash
-DATABASE_URL="postgresql://..." npx prisma migrate deploy
 ```
-
-(Можно подключить это как `build` шаг в Vercel через
-`"build": "prisma migrate deploy && next build"` в `package.json`, если
-хотите автоматизировать.)
+DATABASE_URL="<connection string ветки dev из Neon Console>"
+AUTH_SECRET="<любая случайная строка, напр. `openssl rand -base64 32`>"
+```

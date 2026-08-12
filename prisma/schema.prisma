@@ -1,15 +1,13 @@
 // Prisma schema for Golf Club Minsk booking app.
-// Local dev uses SQLite (see .env). For production, switch provider to
-// "postgresql" and point DATABASE_URL at a managed Postgres instance
-// (see DEPLOY.md) — the models below avoid provider-specific features
-// so the switch is a one-line change.
+// Backed by managed Postgres (Neon) — see DEPLOY.md. Local development
+// uses a separate Neon branch so it never touches production data.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

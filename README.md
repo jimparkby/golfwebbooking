@@ -7,9 +7,11 @@
 ## Стек
 
 - **Next.js 16** (App Router, TypeScript, Tailwind CSS)
-- **Prisma 6** + SQLite (локальная разработка) / PostgreSQL (продакшн)
+- **Prisma 6** + **PostgreSQL** (Neon — отдельные ветки БД для prod и dev)
 - **NextAuth v5** — вход для администраторов
 - Server Actions вместо отдельного REST/API-слоя
+- Деплой: **Vercel** (проект `golfwebbooking`), репозиторий на GitHub
+  (`jimparkby/golfwebbooking`)
 
 ## Возможности
 
@@ -29,10 +31,19 @@
 
 ## Локальный запуск
 
+Локальная разработка использует отдельную Neon-ветку БД `dev` (не продакшн) —
+строка подключения уже в `.env`.
+
 ```bash
 npm install
-npm run seed   # создаёт админа и наполняет БД реальными услугами/тренерами клуба
 npm run dev
+```
+
+Если нужно пересоздать/переналить данные на dev-ветке:
+
+```bash
+npx prisma migrate deploy
+npm run seed
 ```
 
 Приложение: http://localhost:3000

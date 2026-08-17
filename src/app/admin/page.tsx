@@ -13,27 +13,44 @@ export default async function AdminDashboard() {
     <>
       <AdminNav />
       <main className="mx-auto max-w-5xl px-4 py-10">
-        <h1 className="text-2xl font-semibold text-stone-900">Сегодня, {todayKey()}</h1>
-        <p className="mt-1 text-stone-500">{active.length} активных записей</p>
+        <h1 className="text-2xl font-bold tracking-tight text-stone-900">
+          Сегодня, {todayKey()}
+        </h1>
+        <p className="mt-1 text-sm font-semibold tracking-wide text-stone-500 uppercase">
+          {active.length} активных записей
+        </p>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-stone-200 bg-white">
+        <div className="mt-6 overflow-hidden rounded-lg border border-stone-200 bg-white">
           {active.length === 0 ? (
             <p className="p-6 text-sm text-stone-500">На сегодня записей нет.</p>
           ) : (
             <table className="w-full text-left text-sm">
-              <thead className="bg-stone-50 text-stone-500">
+              <thead className="border-b-2 border-stone-900 text-stone-500">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Время</th>
-                  <th className="px-4 py-3 font-medium">Услуга</th>
-                  <th className="px-4 py-3 font-medium">Тренер</th>
-                  <th className="px-4 py-3 font-medium">Клиент</th>
-                  <th className="px-4 py-3 font-medium">Телефон</th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Время
+                  </th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Услуга
+                  </th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Тренер
+                  </th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Клиент
+                  </th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Телефон
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {active.map((b) => (
-                  <tr key={b.id} className="border-t border-stone-100">
-                    <td className="px-4 py-3">{b.startTime}</td>
+                  <tr
+                    key={b.id}
+                    className="border-t border-stone-100 transition hover:bg-stone-50"
+                  >
+                    <td className="px-4 py-3 font-semibold text-stone-900">{b.startTime}</td>
                     <td className="px-4 py-3">{b.service.title}</td>
                     <td className="px-4 py-3">{b.trainer?.name ?? "—"}</td>
                     <td className="px-4 py-3">{b.clientName}</td>

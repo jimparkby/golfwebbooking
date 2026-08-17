@@ -88,10 +88,12 @@ export default function TeeTimePage() {
         <Header />
         <main className="flex-1">
           <div className="mx-auto max-w-lg px-4 py-20 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-stone-900 text-white">
               ✓
             </div>
-            <h1 className="text-xl font-semibold text-stone-900">Бронь подтверждена</h1>
+            <h1 className="text-xl font-bold tracking-tight text-stone-900">
+              Бронь подтверждена
+            </h1>
             <p className="mt-2 text-stone-600">
               {dateKey}, {selectedTime} · {holes} лунок · {players}{" "}
               {players === 1 ? "игрок" : "игрока/игроков"}
@@ -115,16 +117,18 @@ export default function TeeTimePage() {
         <div className="mx-auto max-w-2xl px-4 py-10">
           {/* Step 1: hole + date */}
           <section className="mt-8">
-            <h2 className="text-sm font-medium text-stone-500">1. Старт и дата</h2>
+            <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+              1. Старт и дата
+            </h2>
             <div className="mt-3 flex flex-wrap gap-3">
               {services.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => setServiceId(s.id)}
-                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition ${
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
                     serviceId === s.id
-                      ? "border-emerald-700 bg-emerald-700 text-white"
-                      : "border-stone-300 bg-white text-stone-700 hover:border-emerald-700"
+                      ? "border-stone-900 bg-stone-900 text-white"
+                      : "border-stone-300 bg-white text-stone-700 hover:border-stone-900"
                   }`}
                 >
                   {s.title}
@@ -136,13 +140,15 @@ export default function TeeTimePage() {
               min={todayKey()}
               value={dateKey}
               onChange={(e) => setDateKey(e.target.value)}
-              className="mt-3 rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+              className="mt-3 rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
             />
           </section>
 
           {/* Step 2: time slot */}
           <section className="mt-8">
-            <h2 className="text-sm font-medium text-stone-500">2. Время</h2>
+            <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+              2. Время
+            </h2>
             {loadingSlots ? (
               <p className="mt-3 text-sm text-stone-500">Загрузка…</p>
             ) : slots.length === 0 ? (
@@ -157,12 +163,12 @@ export default function TeeTimePage() {
                       setSelectedTime(s.time);
                       setPlayers((p) => Math.min(p, s.remaining));
                     }}
-                    className={`rounded-lg border px-2 py-2 text-sm font-medium transition ${
+                    className={`rounded-full border px-2 py-2 text-sm font-semibold transition ${
                       s.remaining === 0
                         ? "cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400"
                         : selectedTime === s.time
-                          ? "border-emerald-700 bg-emerald-700 text-white"
-                          : "border-stone-300 bg-white text-stone-700 hover:border-emerald-700"
+                          ? "border-stone-900 bg-stone-900 text-white"
+                          : "border-stone-300 bg-white text-stone-700 hover:border-stone-900"
                     }`}
                   >
                     {s.time}
@@ -176,16 +182,18 @@ export default function TeeTimePage() {
           {selectedTime && (
             <section className="mt-8 grid grid-cols-2 gap-4">
               <div>
-                <h2 className="text-sm font-medium text-stone-500">Количество лунок</h2>
+                <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+                  Количество лунок
+                </h2>
                 <div className="mt-2 flex gap-2">
                   {[9, 18].map((h) => (
                     <button
                       key={h}
                       onClick={() => setHoles(h as 9 | 18)}
-                      className={`rounded-lg border px-4 py-2 text-sm font-medium transition ${
+                      className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
                         holes === h
-                          ? "border-emerald-700 bg-emerald-700 text-white"
-                          : "border-stone-300 bg-white text-stone-700 hover:border-emerald-700"
+                          ? "border-stone-900 bg-stone-900 text-white"
+                          : "border-stone-300 bg-white text-stone-700 hover:border-stone-900"
                       }`}
                     >
                       {h}
@@ -194,13 +202,13 @@ export default function TeeTimePage() {
                 </div>
               </div>
               <div>
-                <h2 className="text-sm font-medium text-stone-500">
+                <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
                   Игроков (доступно {maxSelectablePlayers})
                 </h2>
                 <select
                   value={players}
                   onChange={(e) => setPlayers(Number(e.target.value))}
-                  className="mt-2 rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+                  className="mt-2 rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
                 >
                   {Array.from({ length: Math.max(1, maxSelectablePlayers) }, (_, i) => i + 1).map(
                     (n) => (
@@ -217,14 +225,16 @@ export default function TeeTimePage() {
           {/* Step 4: contact info */}
           {selectedTime && (
             <section className="mt-8">
-              <h2 className="text-sm font-medium text-stone-500">3. Ваши данные</h2>
+              <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+                3. Ваши данные
+              </h2>
               <div className="mt-3 grid gap-3">
                 <input
                   type="text"
                   placeholder="Имя"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
                 />
                 <PhoneInput value={phone} onChange={setPhone} />
                 <textarea
@@ -232,7 +242,7 @@ export default function TeeTimePage() {
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   rows={2}
-                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
                 />
               </div>
 
@@ -243,7 +253,7 @@ export default function TeeTimePage() {
                 disabled={
                   submitting || name.trim().length < 2 || !/^\+375\d{9}$/.test(phone)
                 }
-                className="mt-4 w-full rounded-lg bg-emerald-700 px-4 py-3 font-medium text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-4 w-full rounded-full bg-stone-900 px-4 py-3 font-semibold tracking-wide text-white uppercase transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? "Отправка…" : "Подтвердить бронь"}
               </button>

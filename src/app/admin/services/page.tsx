@@ -38,27 +38,38 @@ export default function AdminServicesPage() {
     <>
       <AdminNav />
       <main className="mx-auto max-w-3xl px-4 py-10">
-        <h1 className="text-2xl font-semibold text-stone-900">Услуги</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-stone-900">Услуги</h1>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-stone-200 bg-white">
+        <div className="mt-6 overflow-hidden rounded-lg border border-stone-200 bg-white">
           {loading ? (
             <p className="p-6 text-sm text-stone-500">Загрузка…</p>
           ) : (
             <table className="w-full text-left text-sm">
-              <thead className="bg-stone-50 text-stone-500">
+              <thead className="border-b-2 border-stone-900 text-stone-500">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Услуга</th>
-                  <th className="px-4 py-3 font-medium">Тип</th>
-                  <th className="px-4 py-3 font-medium">Длительность</th>
-                  <th className="px-4 py-3 font-medium">Цена, BYN</th>
-                  <th className="px-4 py-3 font-medium">Статус</th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Услуга
+                  </th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">Тип</th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Длительность
+                  </th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Цена, BYN
+                  </th>
+                  <th className="px-4 py-3 text-xs font-semibold tracking-wide uppercase">
+                    Статус
+                  </th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
               <tbody>
                 {services.map((s) => (
-                  <tr key={s.id} className="border-t border-stone-100">
-                    <td className="px-4 py-3">{s.title}</td>
+                  <tr
+                    key={s.id}
+                    className="border-t border-stone-100 transition hover:bg-stone-50"
+                  >
+                    <td className="px-4 py-3 font-semibold text-stone-900">{s.title}</td>
                     <td className="px-4 py-3 text-stone-500">
                       {s.type === "lesson" ? "Тренировка" : "Ти-тайм"}
                     </td>
@@ -70,15 +81,15 @@ export default function AdminServicesPage() {
                         placeholder="по запросу"
                         onBlur={(e) => savePrice(s, e.target.value)}
                         disabled={savingId === s.id}
-                        className="w-28 rounded-lg border border-stone-300 px-2 py-1 text-sm focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+                        className="w-28 rounded-lg border border-stone-300 px-2 py-1 text-sm focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
                       />
                     </td>
                     <td className="px-4 py-3">
                       <span
                         className={
                           s.active
-                            ? "rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700"
-                            : "rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500"
+                            ? "text-xs font-bold tracking-wide text-emerald-700 uppercase"
+                            : "text-xs font-bold tracking-wide text-stone-400 uppercase"
                         }
                       >
                         {s.active ? "активна" : "скрыта"}
@@ -87,7 +98,7 @@ export default function AdminServicesPage() {
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => toggleActive(s)}
-                        className="text-xs font-medium text-emerald-700 hover:underline"
+                        className="text-xs font-semibold text-stone-900 hover:underline"
                       >
                         {s.active ? "Скрыть" : "Показать"}
                       </button>

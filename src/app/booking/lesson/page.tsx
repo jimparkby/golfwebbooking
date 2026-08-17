@@ -103,10 +103,12 @@ export default function LessonPage() {
         <Header />
         <main className="flex-1">
           <div className="mx-auto max-w-lg px-4 py-20 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-stone-900 text-white">
               ✓
             </div>
-            <h1 className="text-xl font-semibold text-stone-900">Запись подтверждена</h1>
+            <h1 className="text-xl font-bold tracking-tight text-stone-900">
+              Запись подтверждена
+            </h1>
             <p className="mt-2 text-stone-600">
               {service?.title} с {trainer?.name} · {dateKey}, {selectedTime}
             </p>
@@ -129,7 +131,9 @@ export default function LessonPage() {
         <div className="mx-auto max-w-2xl px-4 py-10">
           {/* Step 1: service */}
           <section className="mt-8">
-            <h2 className="text-sm font-medium text-stone-500">1. Услуга</h2>
+            <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+              1. Услуга
+            </h2>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {services.map((s) => (
                 <button
@@ -137,11 +141,11 @@ export default function LessonPage() {
                   onClick={() => setServiceId(s.id)}
                   className={`rounded-lg border p-4 text-left transition ${
                     serviceId === s.id
-                      ? "border-emerald-700 bg-emerald-50"
-                      : "border-stone-300 bg-white hover:border-emerald-700"
+                      ? "border-stone-900 bg-stone-50"
+                      : "border-stone-300 bg-white hover:border-stone-900"
                   }`}
                 >
-                  <div className="font-medium text-stone-900">{s.title}</div>
+                  <div className="font-semibold text-stone-900">{s.title}</div>
                   <div className="mt-1 text-sm text-stone-500">
                     {s.durationMin} мин · {s.priceByn ? `${s.priceByn} BYN` : "цена по запросу"}
                   </div>
@@ -153,7 +157,7 @@ export default function LessonPage() {
           {/* Step 2: trainer */}
           {service && (
             <section className="mt-8">
-              <h2 className="text-sm font-medium text-stone-500">
+              <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
                 2. {roleLabel[service.trainerRole ?? ""] ?? "Тренер"}
               </h2>
               <div className="mt-3 flex flex-wrap gap-3">
@@ -161,10 +165,10 @@ export default function LessonPage() {
                   <button
                     key={t.id}
                     onClick={() => setTrainerId(t.id)}
-                    className={`flex items-center gap-3 rounded-lg border py-2 pl-2 pr-4 text-sm font-medium transition ${
+                    className={`flex items-center gap-3 rounded-full border py-2 pl-2 pr-4 text-sm font-semibold transition ${
                       trainerId === t.id
-                        ? "border-emerald-700 bg-emerald-700 text-white"
-                        : "border-stone-300 bg-white text-stone-700 hover:border-emerald-700"
+                        ? "border-stone-900 bg-stone-900 text-white"
+                        : "border-stone-300 bg-white text-stone-700 hover:border-stone-900"
                     }`}
                   >
                     {t.photoUrl ? (
@@ -190,13 +194,15 @@ export default function LessonPage() {
           {/* Step 3: date + time */}
           {trainerId && (
             <section className="mt-8">
-              <h2 className="text-sm font-medium text-stone-500">3. Дата и время</h2>
+              <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+                3. Дата и время
+              </h2>
               <input
                 type="date"
                 min={todayKey()}
                 value={dateKey}
                 onChange={(e) => setDateKey(e.target.value)}
-                className="mt-3 rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+                className="mt-3 rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
               />
               {loadingSlots ? (
                 <p className="mt-3 text-sm text-stone-500">Загрузка…</p>
@@ -210,10 +216,10 @@ export default function LessonPage() {
                     <button
                       key={time}
                       onClick={() => setSelectedTime(time)}
-                      className={`rounded-lg border px-2 py-2 text-sm font-medium transition ${
+                      className={`rounded-full border px-2 py-2 text-sm font-semibold transition ${
                         selectedTime === time
-                          ? "border-emerald-700 bg-emerald-700 text-white"
-                          : "border-stone-300 bg-white text-stone-700 hover:border-emerald-700"
+                          ? "border-stone-900 bg-stone-900 text-white"
+                          : "border-stone-300 bg-white text-stone-700 hover:border-stone-900"
                       }`}
                     >
                       {time}
@@ -227,14 +233,16 @@ export default function LessonPage() {
           {/* Step 4: contact info */}
           {selectedTime && (
             <section className="mt-8">
-              <h2 className="text-sm font-medium text-stone-500">4. Ваши данные</h2>
+              <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+                4. Ваши данные
+              </h2>
               <div className="mt-3 grid gap-3">
                 <input
                   type="text"
                   placeholder="Имя"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
                 />
                 <PhoneInput value={phone} onChange={setPhone} />
                 <textarea
@@ -242,7 +250,7 @@ export default function LessonPage() {
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   rows={2}
-                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+                  className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
                 />
               </div>
 
@@ -253,7 +261,7 @@ export default function LessonPage() {
                 disabled={
                   submitting || name.trim().length < 2 || !/^\+375\d{9}$/.test(phone)
                 }
-                className="mt-4 w-full rounded-lg bg-emerald-700 px-4 py-3 font-medium text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-4 w-full rounded-full bg-stone-900 px-4 py-3 font-semibold tracking-wide text-white uppercase transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {submitting ? "Отправка…" : "Подтвердить запись"}
               </button>

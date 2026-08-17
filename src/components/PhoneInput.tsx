@@ -21,7 +21,7 @@ export default function PhoneInput({
         }
         onChange(v.slice(0, 13));
       }}
-      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-700"
+      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-stone-900 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 focus:outline-none"
     />
   );
 }

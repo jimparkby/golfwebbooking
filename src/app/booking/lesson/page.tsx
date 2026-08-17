@@ -35,6 +35,7 @@ export default function LessonPage() {
 
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [trainerId, setTrainerId] = useState<string>("");
+  const [viewingTrainer, setViewingTrainer] = useState<Trainer | null>(null);
 
   const [dateKey, setDateKey] = useState(todayKey());
   const [slots, setSlots] = useState<string[]>([]);
@@ -160,31 +161,41 @@ export default function LessonPage() {
               <h2 className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
                 2. {roleLabel[service.trainerRole ?? ""] ?? "Тренер"}
               </h2>
-              <div className="mt-3 flex flex-wrap gap-3">
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {trainers.map((t) => (
                   <button
                     key={t.id}
-                    onClick={() => setTrainerId(t.id)}
-                    className={`flex items-center gap-3 rounded-full border py-2 pl-2 pr-4 text-sm font-semibold transition ${
+                    onClick={() => {
+                      setTrainerId(t.id);
+                      setViewingTrainer(t);
+                    }}
+                    className={`overflow-hidden rounded-lg border text-left transition ${
                       trainerId === t.id
-                        ? "border-stone-900 bg-stone-900 text-white"
-                        : "border-stone-300 bg-white text-stone-700 hover:border-stone-900"
+                        ? "border-stone-900 ring-1 ring-stone-900"
+                        : "border-stone-300 hover:border-stone-900"
                     }`}
                   >
                     {t.photoUrl ? (
                       <Image
                         src={t.photoUrl}
                         alt={t.name}
-                        width={36}
-                        height={36}
-                        className="h-9 w-9 rounded-full object-cover"
+                        width={240}
+                        height={240}
+                        className="aspect-square w-full object-cover"
                       />
                     ) : (
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-200 text-xs text-stone-600">
+                      <span className="flex aspect-square w-full items-center justify-center bg-stone-200 text-2xl text-stone-500">
                         {t.name.charAt(0)}
                       </span>
                     )}
-                    {t.name}
+                    <span className="block px-3 py-2">
+                      <span className="block text-sm font-semibold text-stone-900">
+                        {t.name}
+                      </span>
+                      <span className="text-xs text-stone-500">
+                        {roleLabel[t.role] ?? t.role}
+                      </span>
+                    </span>
                   </button>
                 ))}
               </div>
@@ -271,6 +282,65 @@ export default function LessonPage() {
         </div>
       </main>
       <Footer />
+
+      {viewingTrainer && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setViewingTrainer(null)}
+        >
+          <div
+            className="max-h-full w-full max-w-sm overflow-y-auto rounded-lg bg-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative">
+              {viewingTrainer.photoUrl ? (
+                <Image
+                  src={viewingTrainer.photoUrl}
+                  alt={viewingTrainer.name}
+                  width={480}
+                  height={480}
+                  className="aspect-square w-full object-cover"
+                />
+              ) : (
+                <span className="flex aspect-square w-full items-center justify-center bg-stone-200 text-5xl text-stone-500">
+                  {viewingTrainer.name.charAt(0)}
+                </span>
+              )}
+              <button
+                onClick={() => setViewingTrainer(null)}
+                aria-label="Закрыть"
+                className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white transition hover:bg-black"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-5">
+              <div className="text-xs font-semibold tracking-[0.15em] text-stone-500 uppercase">
+                {roleLabel[viewingTrainer.role] ?? viewingTrainer.role}
+              </div>
+              <h3 className="mt-1 text-lg font-bold tracking-tight text-stone-900">
+                {viewingTrainer.name}
+              </h3>
+              {viewingTrainer.bio && (
+                <ul className="mt-3 space-y-1.5 text-sm text-stone-600">
+                  {viewingTrainer.bio.split("\n").map((line, i) => (
+                    <li key={i} className="flex gap-2">
+                      <span className="text-stone-400">·</span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button
+                onClick={() => setViewingTrainer(null)}
+                className="mt-5 w-full rounded-full bg-stone-900 px-4 py-2.5 text-sm font-semibold tracking-wide text-white uppercase transition hover:bg-black"
+              >
+                {trainerId === viewingTrainer.id ? "Выбрано" : "Выбрать"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
